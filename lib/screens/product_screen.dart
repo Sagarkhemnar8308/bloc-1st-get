@@ -2,7 +2,7 @@ import 'package:api/bloc/products_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:velocity_x/velocity_x.dart';
 
 class Product extends StatefulWidget {
   const Product({super.key});
@@ -12,85 +12,101 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
- 
-@override
+  @override
   void initState() {
- context.read<ProductsBloc>().add(ProductLoadedEvent());
+    context.read<ProductsBloc>().add(ProductLoadedEvent());
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: IconButton(
-          style: IconButton.styleFrom(
-            backgroundColor: Colors.orange,
-          ),
-          onPressed: () {
-            _showAlertDialog(context);
-          },
-          icon: const Icon(
-            Icons.add,
-            size: 20,
-            color: Colors.black,
-          )),
-      appBar: AppBar(
-        toolbarHeight: 40,
-        backgroundColor: Colors.orange,
-        title: const Text("Bloc State Management"),
-        centerTitle: true,
-        elevation: 0.0,
-        bottom: AppBar(
-          leading: const SizedBox(),
-          toolbarHeight: 16,
-          elevation: 0.0,
+        floatingActionButton: IconButton(
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.orange,
+            ),
+            onPressed: () {
+              _showAlertDialog(context);
+            },
+            icon: const Icon(
+              Icons.add,
+              size: 20,
+              color: Colors.black,
+            )),
+        appBar: AppBar(
+          toolbarHeight: 40,
           backgroundColor: Colors.orange,
-          actions: const [Text("- API    ")],
+          title: const Text("Bloc State Management"),
+          centerTitle: true,
+          elevation: 0.0,
+          bottom: AppBar(
+            leading: const SizedBox(),
+            toolbarHeight: 16,
+            elevation: 0.0,
+            backgroundColor: Colors.orange,
+            actions: const [Text("- API    ")],
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_outlined),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_outlined),
-          onPressed: () {
-            Navigator.pop(context);
+        // body: BlocBuilder<ProductsBloc, ProductsState>(
+        //   builder: (context, state) {
+        //     if (state is ProductsLoadingState) {
+        //       return const Center(
+        //         child: CircularProgressIndicator.adaptive(),
+        //       );
+        //     } else if (state is ProductsLoadedState) {
+        //       return Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           const Text(" Baap Product",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 30),),
+        //           Expanded(
+        //             child: ListView.builder(
+        //               itemCount: state.productmodel.length,
+        //               itemBuilder: (context, index) {
+        //                 return ListTile(
+        //                   leading: Text(state.productmodel[index].id.toString()),
+        //                   title: Text(state.productmodel[index].title.toString()),
+        //                   trailing: Image.network(
+        //                     state.productmodel[index].image.toString(),
+        //                     height: 40,
+        //                     width: 40,
+        //                   ),
+        //                 );
+        //               },
+        //             ),
+        //           ),
+        //         ],
+        //       );
+        //     } else if (state is ProductsErrorState) {
+        //       return const Center(
+        //         child: Text("Error !"),
+        //       );
+        //     }
+        //     return const SizedBox();
+        //   },
+        // ),
+        body: BlocListener<ProductsBloc, ProductsState>(
+        
+          listener: (context, state) {
+            if (state is ProductsLoadedState) {
+              VxToast.show(context, msg: "Velocity x products loaded",position: VxToastPosition.top);
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Data Get Successfully")));
+            } else if (state is ProductsErrorState) {
+              VxToast.show(context, msg: "Velocity x products Not beloaded");
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Get a error to fetch a data")));
+            }
           },
-        ),
-      ),
-      body: BlocBuilder<ProductsBloc, ProductsState>(
-        builder: (context, state) {
-          if (state is ProductsLoadingState) {
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          } else if (state is ProductsLoadedState) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(" Baap Product",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 30),),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: state.productmodel.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: Text(state.productmodel[index].id.toString()),
-                        title: Text(state.productmodel[index].title.toString()),
-                        trailing: Image.network(
-                          state.productmodel[index].image.toString(),
-                          height: 40,
-                          width: 40,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          } else if (state is ProductsErrorState) {
-            return const Center(
-              child: Text("Error !"),
-            );
-          }
-          return const SizedBox();
-        },
-      ),
-    );
+          child: const Center(
+            child: Text("Bloc Listener..."),
+          ),
+        ));
   }
 
   Future<void> _showAlertDialog(BuildContext context) async {
@@ -129,7 +145,6 @@ class _ProductState extends State<Product> {
                 const SizedBox(
                   height: 20,
                 ),
-              
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
@@ -137,9 +152,7 @@ class _ProductState extends State<Product> {
                           backgroundColor: Colors.blueAccent[300],
                           shape: const StadiumBorder(
                               side: BorderSide(color: Colors.grey))),
-                      onPressed: () {
-                    
-                      },
+                      onPressed: () {},
                       child: const Text("Upload Image")),
                 ),
                 Padding(
@@ -169,11 +182,8 @@ class _ProductState extends State<Product> {
               ],
             ),
           ),
-         
         );
       },
     );
   }
-
-
 }
