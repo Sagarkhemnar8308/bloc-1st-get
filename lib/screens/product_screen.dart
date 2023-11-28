@@ -90,8 +90,7 @@ class _ProductState extends State<Product> {
         //     return const SizedBox();
         //   },
         // ),
-        body: BlocListener<ProductsBloc, ProductsState>(
-        
+        body: BlocListener<ProductsBloc, ProductsState>(        
           listener: (context, state) {
             if (state is ProductsLoadedState) {
               VxToast.show(context, msg: "Velocity x products loaded",position: VxToastPosition.top);
