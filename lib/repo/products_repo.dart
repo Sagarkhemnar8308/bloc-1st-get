@@ -7,6 +7,7 @@ class ProductRepo {
   Future<List<DataModel>> getProducts() async {
     var response = await http.get(Uri.parse("https://fakestoreapi.com/products"));
     if (response.statusCode == 200) {
+            print("Data Get Successfully");
       List<DataModel> dataModels = dataModelFromJson(response.body);
       return dataModels; 
     } else {
